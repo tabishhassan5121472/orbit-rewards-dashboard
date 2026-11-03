@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orbit — Money that rewards you back</title>
+  <meta name="description" content="Orbit is a rewards-first money app. Explore the live, interactive dashboard demo.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Set theme before first paint to avoid a flash.
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('orbit-theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+  <!-- Icon sprite -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="g-orange" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffb347"/><stop offset=".55" stop-color="#ff6a2b"/><stop offset="1" stop-color="#ff3d1f"/>
+      </linearGradient>
+    </defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 4l8.5 6.5V19a1.5 1.5 0 0 1-1.5 1.5h-4v-6h-6v6H5A1.5 1.5 0 0 1 3.5 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17A2.5 2.5 0 0 1 4 14.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 10.5h7M8.5 13.5h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="4.5" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 12.5V19a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-6.5M12 8v12.5M12 8S10.5 3.5 8 4.2C6 4.8 6.6 8 9 8M12 8s1.5-4.5 4-3.8c2 .6 1.4 3.8-1 3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 1 1 12 0v5.5l1.5 2H4.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A7.5 7.5 0 0 1 9.5 4.5a7.5 7.5 0 1 0 10 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M5 12h12M12 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M17 7 7 17M15 17H7V9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M7 15h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8z" fill="currentColor"/></symbol>
+    <symbol id="i-orbit" viewBox="0 0 32 32"><circle cx="16" cy="16" r="6.5" fill="url(#g-orange)"/><ellipse cx="16" cy="16" rx="13.5" ry="6" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(-28 16 16)"/><circle cx="27" cy="10.4" r="2.2" fill="currentColor"/></symbol>
+  </svg>
+
+  <a class="skip" href="#demo">Skip to the live demo</a>
+
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="Orbit home">
+        <svg class="brand-mark" aria-hidden="true"><use href="#i-orbit"/></svg>
+        <span>Orbit</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#demo">Live demo</a>
+        <a href="#features">Features</a>
+        <a href="#demo" data-goto="rewards">Rewards</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode">
+          <svg class="ic ic-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+          <svg class="ic ic-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+        </button>
+        <a class="btn btn-primary btn-sm" href="#features">Get early access</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Intro strip -->
+    <section class="intro" aria-labelledby="intro-title">
+      <div class="intro-glow" aria-hidden="true"></div>
+      <svg class="intro-orbits" viewBox="0 0 400 400" aria-hidden="true">
+        <defs>
+          <radialGradient id="planet" cx=".35" cy=".3" r=".8">
+            <stop offset="0" stop-color="#ffd2a6"/><stop offset=".45" stop-color="#ff7a32"/><stop offset="1" stop-color="#c2310f"/>
+          </radialGradient>
+        </defs>
+        <g class="orb-ring r1"><ellipse cx="200" cy="200" rx="180" ry="180" /><circle cx="380" cy="200" r="7" class="moon"/></g>
+        <g class="orb-ring r2"><ellipse cx="200" cy="200" rx="128" ry="128" /><circle cx="72" cy="200" r="5" class="moon"/></g>
+        <g class="orb-ring r3"><ellipse cx="200" cy="200" rx="80" ry="80" /><circle cx="200" cy="120" r="4" class="moon"/></g>
+        <circle cx="200" cy="200" r="38" fill="url(#planet)"/>
+        <ellipse cx="188" cy="186" rx="14" ry="8" fill="#fff" opacity=".35"/>
+      </svg>
+      <div class="wrap intro-inner">
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> New · Orbit Rewards 2.0</p>
+        <h1 id="intro-title" class="intro-title">
+          <span class="line"><span>Money that</span></span>
+          <span class="line"><span>rewards you <em>back.</em></span></span>
+        </h1>
+        <div class="intro-side">
+          <p class="intro-copy">Spend, save and split like you always do. Orbit turns every tap into points, every month into insight. Take the dashboard for a spin below — it’s fully interactive.</p>
+          <div class="intro-ctas">
+            <a class="btn btn-primary" href="#demo">Try the live demo
+              <svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></a>
+            <a class="btn btn-ghost" href="#features">How it works</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live dashboard -->
+    <section id="demo" class="demo" aria-label="Interactive Orbit dashboard demo">
+      <div class="wrap">
+        <div class="app" id="app">
+          <nav class="sidebar" aria-label="Dashboard views">
+            <div class="side-logo" aria-hidden="true"><svg><use href="#i-orbit"/></svg></div>
+            <div class="side-items">
+              <span class="side-pill" aria-hidden="true"></span>
+              <button class="side-btn is-active" type="button" data-view="overview" aria-controls="view-overview" aria-current="page">
+                <svg aria-hidden="true"><use href="#i-home"/></svg><span class="side-label">Overview</span>
+              </button>
+              <button class="side-btn" type="button" data-view="messages" aria-controls="view-messages">
+                <svg aria-hidden="true"><use href="#i-chat"/></svg><span class="side-label">Messages</span>
+                <span class="side-dot" aria-label="2 unread"></span>
+              </button>
+              <button class="side-btn" type="button" data-view="rewards" aria-controls="view-rewards">
+                <svg aria-hidden="true"><use href="#i-gift"/></svg><span class="side-label">Rewards</span>
+              </button>
+            </div>
+          </nav>
+
+          <div class="app-main">
+            <div class="topbar">
+              <div class="top-title" aria-live="polite"><span id="top-title">Overview</span></div>
+              <label class="search">
+                <svg aria-hidden="true"><use href="#i-search"/></svg>
+                <span class="sr-only">Search transactions</span>
+                <input id="search" type="search" placeholder="Search transactions…" autocomplete="off">
+                <kbd>/</kbd>
+              </label>
+              <div class="top-actions">
+                <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode">
+                  <svg class="ic ic-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+                  <svg class="ic ic-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+                </button>
+                <div class="notif">
+                  <button class="icon-btn bell" id="bell" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="notif-panel" aria-label="Notifications, 3 new">
+                    <svg aria-hidden="true"><use href="#i-bell"/></svg>
+                    <span class="badge" aria-hidden="true">3</span>
+                  </button>
+                  <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifications" hidden>
+                    <p class="np-head">Notifications</p>
+                    <ul>
+                      <li><span class="np-ic np-o">★</span><div><b>+1,240 points</b> from your Fernleaf Market shop<small>2 min ago</small></div></li>
+                      <li><span class="np-ic np-g">↓</span><div><b>Maya</b> paid you back $42.50<small>1 h ago</small></div></li>
+                      <li><span class="np-ic np-b">%</span><div>New boost: <b>5× points</b> on coffee this week<small>Today</small></div></li>
+                    </ul>
+                  </div>
+                </div>
+                <button class="avatar-btn" type="button" aria-label="Account: Alex Moreau">
+                  <span class="avatar av-alex" aria-hidden="true">AM</span>
+                  <span class="avatar-meta"><b>Alex Moreau</b><small>Gold member</small></span>
+                </button>
+              </div>
+            </div>
+
+            <div class="views">
+              <!-- OVERVIEW -->
+              <section class="view is-active" id="view-overview" data-name="overview" aria-label="Overview">
+                <div class="greet stag" style="--i:0">
+                  <div>
+                    <h2>Good morning, Alex</h2>
+                    <p class="muted" id="today"></p>
+                  </div>
+                  <div class="quick" role="group" aria-label="Quick actions">
+                    <button class="qa" type="button" data-toast="Send money — pick a contact"><span><svg aria-hidden="true"><use href="#i-up"/></svg></span>Send</button>
+                    <button class="qa" type="button" data-toast="Request link copied"><span><svg aria-hidden="true"><use href="#i-down"/></svg></span>Request</button>
+                    <button class="qa" type="button" data-toast="Top up of $100 queued"><span><svg aria-hidden="true"><use href="#i-plus"/></svg></span>Top up</button>
+                    <button class="qa" type="button" data-toast="Your virtual card is frozen"><span><svg aria-hidden="true"><use href="#i-card"/></svg></span>Cards</button>
+                  </div>
+                </div>
+
+                <div class="ov-grid">
+                  <article class="card balance stag" style="--i:1">
+                    <div class="card-head">
+                      <div>
+                        <p class="label">Total balance</p>
+                        <p class="big-num"><span id="balance" data-to="24836.52">$0.00</span></p>
+                        <p class="delta"><span class="chip chip-up">▲ 4.2%</span> <span class="muted">vs. last month</span></p>
+                      </div>
+                      <div class="seg" role="group" aria-label="Chart range">
+                        <button type="button" data-range="7">1W</button>
+                        <button type="button" data-range="30" class="is-on">1M</button>
+                        <button type="button" data-range="90">3M</button>
+                      </div>
+                    </div>
+                    <div class="chart" id="chart" tabindex="0" role="img" aria-label="Balance over the last 30 days, trending up. Use arrow keys to inspect values.">
+                      <svg id="chart-svg" aria-hidden="true"></svg>
+                      <div class="tip" id="tip" aria-hidden="true"><small></small><b></b></div>
+                    </div>
+                  </article>
+
+                  <article class="card donut-card stag" style="--i:2">
+                    <div class="card-head"><div><p class="label">Spending · October</p><p class="mid-num" id="spend-total">$3,482</p></div></div>
+                    <div class="donut-wrap">
+                      <svg class="donut" viewBox="0 0 160 160" role="img" aria-label="Spending by category: Groceries 32%, Housing 28%, Transport 16%, Dining 14%, Other 10%">
+                        <circle class="donut-track" cx="80" cy="80" r="62"/>
+                        <g id="donut-segs" transform="rotate(-90 80 80)"></g>
+                      </svg>
+                      <div class="donut-center"><small id="donut-cat">Top category</small><b id="donut-val">Groceries</b></div>
+                    </div>
+                    <ul class="legend" id="legend"></ul>
+                  </article>
+
+                  <article class="card tx-card stag" style="--i:3">
+                    <div class="card-head"><p class="label">Recent transactions</p><span class="muted small" id="tx-count"></span></div>
+                    <ul class="tx-list" id="tx-list"></ul>
+                    <p class="tx-empty muted" id="tx-empty" hidden>No transactions match your search.</p>
+                  </article>
+
+                  <div class="side-stack">
+                  <article class="card mini-reward stag" style="--i:4">
+                    <div class="mr-glow" aria-hidden="true"></div>
+                    <p class="label">Orbit points</p>
+                    <p class="mid-num">48,250 <small>pts</small></p>
+                    <div class="bar" aria-hidden="true"><span style="--w:.78"></span></div>
+                    <p class="muted small">13,750 pts to Platinum · earn 2× this week</p>
+                    <button class="btn btn-primary btn-sm" type="button" data-goto="rewards">Open rewards
+                      <svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></button>
+                  </article>
+                  <article class="card vault stag" style="--i:5">
+                    <div class="card-head"><p class="label">Vaults</p><span class="muted small">3 active</span></div>
+                    <ul class="vault-list">
+                      <li><span class="v-ic" style="--c:linear-gradient(135deg,#4fd1e8,#127fa8)" aria-hidden="true">✈</span><div><b>Lisbon trip</b><div class="bar"><span style="--w:.64"></span></div></div><span class="v-amt">$1,920<small>of $3,000</small></span></li>
+                      <li><span class="v-ic" style="--c:linear-gradient(135deg,#34c38f,#0f8a5c)" aria-hidden="true">◆</span><div><b>Rainy day</b><div class="bar"><span style="--w:.82"></span></div></div><span class="v-amt">$4,100<small>of $5,000</small></span></li>
+                      <li><span class="v-ic" style="--c:linear-gradient(135deg,#8f8cff,#5146e0)" aria-hidden="true">♪</span><div><b>New headphones</b><div class="bar"><span style="--w:.35"></span></div></div><span class="v-amt">$105<small>of $300</small></span></li>
+                    </ul>
+                  </article>
+                  </div>
+                </div>
+              </section>
+
+              <!-- MESSAGES -->
+              <section class="view" id="view-messages" data-name="messages" aria-label="Messages" hidden>
+                <div class="msg-grid">
+                  <aside class="convos stag" style="--i:0" aria-label="Conversations">
+                    <p class="label">Conversations</p>
+                    <ul id="convo-list"></ul>
+                  </aside>
+                  <div class="thread card stag" style="--i:1">
+                    <div class="thread-head">
+                      <span class="avatar" id="th-avatar" aria-hidden="true"></span>
+                      <div><b id="th-name"></b><small class="online" id="th-status">online</small></div>
+                    </div>
+                    <div class="thread-body" id="thread" role="log" aria-live="polite" aria-label="Message thread"></div>
+                    <form class="composer" id="composer">
+                      <label class="sr-only" for="msg-input">Write a message</label>
+                      <input id="msg-input" type="text" placeholder="Write a message…" autocomplete="off" maxlength="240">
+                      <button class="send" type="submit" aria-label="Send message"><svg aria-hidden="true"><use href="#i-send"/></svg></button>
+                    </form>
+                  </div>
+                </div>
+              </section>
+
+              <!-- REWARDS -->
+              <section class="view" id="view-rewards" data-name="rewards" aria-label="Rewards" hidden>
+                <div class="rw-grid">
+                  <article class="points-card stag" style="--i:0">
+                    <div class="pc-sheen" aria-hidden="true"></div>
+                    <svg class="pc-orbits" viewBox="0 0 300 300" aria-hidden="true">
+                      <circle cx="150" cy="150" r="140"/><circle cx="150" cy="150" r="100"/><circle cx="150" cy="150" r="60"/>
+                      <circle cx="290" cy="150" r="5" class="pcm"/><circle cx="50" cy="150" r="4" class="pcm"/>
+                    </svg>
+                    <div class="pc-top">
+                      <span class="pc-tier"><svg aria-hidden="true"><use href="#i-star"/></svg> Gold Orbit</span>
+                      <svg class="pc-logo" aria-hidden="true"><use href="#i-orbit"/></svg>
+                    </div>
+                    <p class="pc-label">Available points</p>
+                    <p class="pc-points"><span id="points" data-to="48250">0</span></p>
+                    <div class="pc-foot">
+                      <span>≈ <b id="points-value">$482.50</b> in rewards</span>
+                      <span class="pc-num" aria-hidden="true">•••• 4071</span>
+                    </div>
+                  </article>
+
+                  <article class="card tier-card stag" style="--i:1">
+                    <p class="label">Next tier</p>
+                    <div class="ring-wrap">
+                      <svg class="ring" viewBox="0 0 120 120" role="img" aria-label="78 percent of the way to Platinum">
+                        <defs>
+                          <linearGradient id="ring-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb347"/><stop offset="1" stop-color="#ff3d1f"/></linearGradient>
+                        </defs>
+                        <circle class="ring-track" cx="60" cy="60" r="50"/>
+                        <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="50" transform="rotate(-90 60 60)"/>
+                      </svg>
+                      <div class="ring-center"><b id="ring-pct">0%</b><small>to Platinum</small></div>
+                    </div>
+                    <ul class="perks">
+                      <li><svg aria-hidden="true"><use href="#i-check"/></svg> 3× points on travel</li>
+                      <li><svg aria-hidden="true"><use href="#i-check"/></svg> Free global transfers</li>
+                      <li><svg aria-hidden="true"><use href="#i-check"/></svg> Priority support</li>
+                    </ul>
+                  </article>
+
+                  <div class="offers">
+                    <div class="offers-head stag" style="--i:2"><h3>Redeem offers</h3><span class="muted small">Refreshes every Monday</span></div>
+                    <div class="offer-grid" id="offer-grid"></div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <p class="demo-note muted small">This is a live demo with sample data — click around, nothing is real money.</p>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <h2 id="features-title" class="sec-title">Built to give back</h2>
+        <div class="feat-grid">
+          <article class="feat">
+            <div class="feat-ic fi-1" aria-hidden="true"><svg><use href="#i-star"/></svg></div>
+            <h3>Points on everything</h3>
+            <p>Earn on groceries, rent and coffee alike. No rotating categories, no fine print.</p>
+          </article>
+          <article class="feat">
+            <div class="feat-ic fi-2" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18 9 12l4 3 7-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h3>Budgets that adapt</h3>
+            <p>Orbit learns your rhythm and nudges you before a category runs hot.</p>
+          </article>
+          <article class="feat">
+            <div class="feat-ic fi-3" aria-hidden="true"><svg><use href="#i-chat"/></svg></div>
+            <h3>Split in the chat</h3>
+            <p>Send, request and settle up right inside the conversation — instantly.</p>
+          </article>
+          <article class="feat">
+            <div class="feat-ic fi-4" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.5 5 6.5v5c0 4.3 3 7.6 7 9 4-1.4 7-4.7 7-9v-5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 12 2.2 2.2L15.5 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h3>Vault-grade security</h3>
+            <p>Instant card freeze, biometric approvals and alerts for every single charge.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap foot">
+      <a href="https://github.com/tabishhassan5121472?tab=repositories">← More projects</a>
+      <span>Orbit is a fictional brand. Designed &amp; built by <a href="https://github.com/tabishhassan5121472" rel="noopener" target="_blank">Tabish Hassan</a></span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <script src="main.js"></script>
+</body>
+</html>
